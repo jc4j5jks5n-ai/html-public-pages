@@ -1,0 +1,973 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>林嘉敏 · 个人介绍</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(160deg, #e8f0fe 0%, #d4e6f9 40%, #b3cff2 100%);
+            min-height: 100vh;
+            padding: 32px 16px 60px;
+            color: #2d3436;
+            line-height: 1.7;
+        }
+
+        /* 视角切换 */
+        .view-switcher {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            background: white;
+            border-radius: 24px;
+            padding: 6px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+            display: flex;
+            gap: 4px;
+        }
+
+        .view-btn {
+            border: none;
+            background: transparent;
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #5a6b7f;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: #2c6fb8;
+            color: white;
+        }
+
+        /* 容器 */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            transition: max-width 0.3s ease;
+        }
+
+        .container.mobile {
+            max-width: 520px;
+        }
+
+        /* 头部 */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 48px 40px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            position: relative;
+        }
+
+        .header-info {
+            flex: 1;
+        }
+
+        .header-name {
+            font-size: 34px;
+            font-weight: 700;
+            color: #1f2d3d;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .header-position {
+            font-size: 16px;
+            color: #2c6fb8;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .header-summary {
+            font-size: 15px;
+            color: #5a6b7f;
+            margin-bottom: 24px;
+            line-height: 1.8;
+        }
+
+        .header-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-tag {
+            background: white;
+            color: #2c6fb8;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid #dfe7f1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .header-tag:hover {
+            background: #2c6fb8;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .avatar {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #d4e6f9;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .avatar:hover {
+            transform: scale(1.03);
+        }
+
+        .avatar-tip {
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2d3d;
+            color: white;
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .avatar-wrap:hover .avatar-tip {
+            opacity: 1;
+        }
+
+        /* 打招呼按钮 */
+        .greet-area {
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .greet-btn {
+            background: #2c6fb8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 3px 12px rgba(44,111,184,0.3);
+        }
+
+        .greet-btn:hover {
+            background: #1f5a9e;
+            transform: translateY(-2px);
+        }
+
+        .greet-text {
+            font-size: 14px;
+            color: #2c6fb8;
+            font-weight: 500;
+            min-height: 22px;
+            transition: opacity 0.3s;
+        }
+
+        /* 区块标题 */
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1f2d3d;
+            margin: 32px 0 16px;
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .section-title .title-left {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .section-title small {
+            font-size: 13px;
+            font-weight: 400;
+            color: #8a9bb0;
+        }
+
+        .expand-all-btn {
+            background: white;
+            border: 1px solid #d4e6f9;
+            color: #2c6fb8;
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .expand-all-btn:hover {
+            background: #2c6fb8;
+            color: white;
+        }
+
+        /* 能力卡片 */
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            scroll-margin-top: 20px;
+            transition: box-shadow 0.2s;
+        }
+
+        .feature-card:target {
+            box-shadow: 0 0 0 3px #2c6fb8, 0 6px 24px rgba(44,111,184,0.15);
+        }
+
+        .feature-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #eef2f7;
+            cursor: pointer;
+        }
+
+        .feature-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #2c6fb8;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            flex-shrink: 0;
+            transition: transform 0.3s;
+        }
+
+        .feature-header:hover .feature-number {
+            transform: rotate(-8deg) scale(1.05);
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2d3d;
+        }
+
+        .feature-body {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 32px;
+        }
+
+        .feature-points {
+            font-size: 14px;
+            color: #5a6b7f;
+        }
+
+        .feature-points .point {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .feature-points .point:last-child {
+            margin-bottom: 0;
+        }
+
+        .point-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #2c6fb8;
+            margin-top: 9px;
+            flex-shrink: 0;
+        }
+
+        .point strong {
+            color: #1f2d3d;
+        }
+
+        .data-point {
+            color: #2c6fb8;
+            font-weight: 700;
+            cursor: pointer;
+            border-bottom: 1px dashed #2c6fb8;
+            transition: all 0.2s;
+        }
+
+        .data-point:hover {
+            background: #eef4fb;
+            border-radius: 4px;
+        }
+
+        .quote-box {
+            background: #eef4fb;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            align-self: start;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .quote-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(44,111,184,0.12);
+        }
+
+        .quote-label {
+            font-size: 12px;
+            color: #8a9bb0;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .quote-text {
+            font-size: 14px;
+            color: #2c3e50;
+            line-height: 1.8;
+        }
+
+        .quote-source {
+            font-size: 12px;
+            color: #8a9bb0;
+            margin-top: 12px;
+            text-align: right;
+        }
+
+        /* 依据折叠 */
+        .evidence-section {
+            margin-top: 20px;
+            padding-top: 14px;
+            border-top: 1px dashed #d4e6f9;
+        }
+
+        .evidence-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #2c6fb8;
+            font-size: 13px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .evidence-toggle:hover {
+            background: #eef4fb;
+        }
+
+        .evidence-list {
+            display: none;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #5a6b7f;
+        }
+
+        .evidence-list.show {
+            display: block;
+        }
+
+        .evidence-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #f4f7fb;
+        }
+
+        .evidence-item:last-child {
+            border-bottom: none;
+        }
+
+        .evidence-item a {
+            color: #2c6fb8;
+            text-decoration: none;
+        }
+
+        .evidence-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* 联系方式 */
+        .contact-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-top: 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .contact-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2d3d;
+            margin-bottom: 16px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .contact-item {
+            background: #f7fafd;
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #5a6b7f;
+        }
+
+        .contact-item strong {
+            display: block;
+            font-size: 13px;
+            color: #1f2d3d;
+            margin-bottom: 4px;
+        }
+
+        .copy-btn {
+            margin-left: 8px;
+            background: #eef4fb;
+            border: none;
+            color: #2c6fb8;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #2c6fb8;
+            color: white;
+        }
+
+        /* 底部操作区 */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: white;
+            border: 1px solid #d4e6f9;
+            color: #2c6fb8;
+            padding: 10px 22px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .action-btn:hover {
+            background: #2c6fb8;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* 结尾 */
+        .footer-slogan {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1f2d3d;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px 8px;
+        }
+
+        .footer-note {
+            font-size: 12px;
+            color: #8a9bb0;
+            line-height: 1.8;
+        }
+
+        /* 返回顶部 */
+        .back-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #2c6fb8;
+            color: white;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(44,111,184,0.35);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .back-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-top:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #1f2d3d;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 13px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 2000;
+            pointer-events: none;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 手机模式 */
+        .container.mobile .header {
+            flex-direction: column;
+            text-align: center;
+            padding: 32px 24px;
+            gap: 24px;
+        }
+
+        .container.mobile .header-tags {
+            justify-content: center;
+        }
+
+        .container.mobile .greet-area {
+            justify-content: center;
+        }
+
+        .container.mobile .feature-body {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .container.mobile .contact-grid {
+            grid-template-columns: 1fr;
+        }
+    </style>
+</head>
+<body>
+    <!-- 视角切换 -->
+    <div class="view-switcher">
+        <button class="view-btn active" onclick="switchView('desktop')">💻 电脑</button>
+        <button class="view-btn" onclick="switchView('mobile')">📱 手机</button>
+    </div>
+
+    <div class="container" id="container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-info">
+                <div class="header-name">林嘉敏</div>
+                <div class="header-position">私域部CRM组 · 抖音会员CRM运营</div>
+                <div class="header-summary">
+                    负责海龟爸爸抖音渠道会员体系的整体运营，覆盖会员活动规划、大促营销、数据复盘与跨部门协同。
+                    入职以来持续输出月度活动规划与专项方案，多次在平台行业榜单中排名领先。
+                </div>
+                <div class="header-tags">
+                    <span class="header-tag" onclick="scrollToFeature('feature1')">会员运营全链路</span>
+                    <span class="header-tag" onclick="scrollToFeature('feature2')">跨部门协同</span>
+                    <span class="header-tag" onclick="scrollToFeature('feature3')">严谨细致</span>
+                </div>
+                <div class="greet-area">
+                    <button class="greet-btn" onclick="sayHello()">👋 打个招呼</button>
+                    <div class="greet-text" id="greetText"></div>
+                </div>
+            </div>
+            <div class="avatar-wrap">
+                <img src="avatar.jpg" alt="头像" class="avatar" onclick="avatarHello()" title="点击有惊喜">
+                <div class="avatar-tip">点我一下 👆</div>
+            </div>
+        </div>
+
+        <!-- 核心特点 -->
+        <div class="section-title">
+            <div class="title-left">
+                核心特点
+                <small>每一条均有依据与出处，点击数字可查看解读</small>
+            </div>
+            <button class="expand-all-btn" onclick="toggleAllEvidence()">📂 全部展开 / 收起依据</button>
+        </div>
+
+        <!-- 能力1 -->
+        <div class="feature-card" id="feature1">
+            <div class="feature-header" onclick="scrollHint('feature1')">
+                <div class="feature-number">01</div>
+                <div class="feature-title">抖音会员运营 · 全链路执行</div>
+            </div>
+            <div class="feature-body">
+                <div class="feature-points">
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div>2025年9月入职，自10月起独立负责抖音会员月度活动规划，<span class="data-point" onclick="dataTip('连续12个月稳定输出月度活动规划，覆盖25年10月至26年9月全部月份','连续 12 个月')">连续12个月稳定输出</span></div>
+                    </div>
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div>覆盖双11、38节、618等全部大促节点，从活动策划、机制设计到数据复盘<strong>全链路跟进</strong></div>
+                    </div>
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div>多次大促会员数据行业榜单排名靠前，如26年618大促期间，抖音会员GMV达到<span class="data-point" onclick="dataTip('2026年618大促抖音会员成交总额，源自大促数据复盘','GMV 5000余万')">5000余万</span>，会员渗透率也达到了同比增长<span class="data-point" onclick="dataTip('618大促期间会员成交占店铺总成交的比例，较上年同期增长12.4%','渗透率同比增长 12.4%')">12.4%</span></div>
+                    </div>
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div>除月度规划外，独立完成包裹卡方案、大促规划、短视频会员入口挂载记录等专项工作</div>
+                    </div>
+                </div>
+                <div class="quote-box" onclick="dataTip('2026年Q2季度点评原文，来自直属上级吴少杨','季度点评详情')">
+                    <div class="quote-label">直属上级季度点评 · 吴少杨</div>
+                    <div class="quote-text">
+                        Q2核心运营指标完成优秀。大促周期内，在【母婴用品】行业中，抖音会员成交转化榜单、拉新转化榜单、成交复访榜单、复访复购榜单均排名第一，基本保持在细分行业的领头羊角色。
+                    </div>
+                    <div class="quote-source">2026年Q2季度点评</div>
+                </div>
+            </div>
+            <div class="evidence-section">
+                <button class="evidence-toggle" onclick="toggleEvidence('evidence1')">
+                    📎 依据与出处（8份文档）
+                </button>
+                <div class="evidence-list" id="evidence1">
+                    <div class="evidence-item">📄 <a href="https://haiguibaba.feishu.cn/sheets/DDSysUlYuhoGMLt5dnrcBpR3nNc" target="_blank">26年10-11月抖音会员活动＆规划</a> · 2026.9.28</div>
+                    <div class="evidence-item">📄 <a href="https://haiguibaba.feishu.cn/sheets/CY8JsCsnHhZzGatsZGMcMAUDn2c" target="_blank">26年9月抖音会员活动＆规划</a> · 2026.8.28</div>
+                    <div class="evidence-item">📄 <a href="https://haiguibaba.feishu.cn/sheets/HmPSsPnTdh3CqOtCLfZc7fw1noh" target="_blank">周四会员日数据登记</a> · 2026.8.20起每周更新</div>
+                    <div class="evidence-item">📄 <a href="https://haiguibaba.feishu.cn/docx/LGd5dViOEosCbzxxhedc7eoBnQu" target="_blank">抖音会员开卡礼备选方案</a> · 2026.8.28</div>
+                    <div class="evidence-item">📄 <a href="https://haiguibaba.feishu.cn/wiki/Ld0ww3mczi935AkSAslcUFRwnLf" target="_blank">25年12月抖音会员活动＆规划</a> · 2025.11.24</div>
+                    <div class="evidence-item">📄 <a href="https://haiguibaba.feishu.cn/wiki/CkQwwhBHniOgCski8u0cqYWXnIG" target="_blank">25年11月抖音会员活动/规划</a> · 2025.10.17</div>
+                    <div class="evidence-item">📄 <a href="https://haiguibaba.feishu.cn/wiki/G93hwTrJti6Su6kVEA2cDQxknuc" target="_blank">抖音有赞编码合集</a> · 2025.8.20</div>
+                    <div class="evidence-item">📄 <a href="https://haiguibaba.feishu.cn/wiki/GknFwx26milXygkyB9icSJZrn9e" target="_blank">抖音短视频会员入口挂载记录</a> · 2025.9.17</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 能力2 -->
+        <div class="feature-card" id="feature2">
+            <div class="feature-header" onclick="scrollHint('feature2')">
+                <div class="feature-number">02</div>
+                <div class="feature-title">跨部门协同 · 高效推进落地</div>
+            </div>
+            <div class="feature-body">
+                <div class="feature-points">
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div><strong>设计协作</strong>：输出明确的需求说明与参考素材，减少沟通返工，保障物料按时上线</div>
+                    </div>
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div><strong>技术支持</strong>：提供完整的问题定位信息，自主排查并推动解决系统问题</div>
+                    </div>
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div><strong>客服协同</strong>：同步奖品名单与跟进要点，提升会员服务效率</div>
+                    </div>
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div><strong>主播运营</strong>：按月同步会员机制变化，明确各渠道透出边界，保障信息准确传达</div>
+                    </div>
+                </div>
+                <div class="quote-box" onclick="dataTip('基于与设计、技术、客服、主播运营多方的实际协作反馈整理','协作方反馈')">
+                    <div class="quote-label">协作方反馈</div>
+                    <div class="quote-text">
+                        需求沟通清晰、信息完整，能准确转化为设计、技术、客服、主播运营各方可直接执行的方案，有效减少反复确认。
+                    </div>
+                    <div class="quote-source">设计、主播运营等多方协作反馈</div>
+                </div>
+            </div>
+            <div class="evidence-section">
+                <button class="evidence-toggle" onclick="toggleEvidence('evidence2')">
+                    📎 依据与出处（聊天记录）
+                </button>
+                <div class="evidence-list" id="evidence2">
+                    <div class="evidence-item">💬 与设计袁嘉明：双11 banner需求沟通 · 2025.10</div>
+                    <div class="evidence-item">💬 与技术潘振健：促销策略问题排查 · 2025.11</div>
+                    <div class="evidence-item">💬 与客服张李娜：奖品发放名单同步 · 多次</div>
+                    <div class="evidence-item">💬 与主播运营朱秀平：每月会员机制同步 · 月度</div>
+                    <div class="evidence-item">💬 与上级欧照文/吴少杨：活动规划审批 · 月度</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 能力3 -->
+        <div class="feature-card" id="feature3">
+            <div class="feature-header" onclick="scrollHint('feature3')">
+                <div class="feature-number">03</div>
+                <div class="feature-title">严谨细致 · 结果导向</div>
+            </div>
+            <div class="feature-body">
+                <div class="feature-points">
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div>活动方案要素完整：参与人群、达成条件、赠品内容、限量份数、备注编码等一次性输出到位</div>
+                    </div>
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div>具备独立排查能力：发现问题后主动验证、查阅配置、定位根因并推动修复</div>
+                    </div>
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div>主动跟进、闭环管理：及时催办与同步进度，确保事项按时完成</div>
+                    </div>
+                    <div class="point">
+                        <div class="point-dot"></div>
+                        <div>数据敏感度高：定期登记复盘会员日活动数据，支撑运营决策</div>
+                    </div>
+                </div>
+                <div class="quote-box" onclick="dataTip('基于跨部门协作中的交付表现与反馈整理','协作方反馈')">
+                    <div class="quote-label">协作方反馈</div>
+                    <div class="quote-text">
+                        沟通务实、交付及时，交办事项均能按时高质量完成，遇到问题主动定位解决，责任心强。
+                    </div>
+                    <div class="quote-source">跨部门协作方反馈</div>
+                </div>
+            </div>
+            <div class="evidence-section">
+                <button class="evidence-toggle" onclick="toggleEvidence('evidence3')">
+                    📎 依据与出处（工作记录）
+                </button>
+                <div class="evidence-list" id="evidence3">
+                    <div class="evidence-item">💬 与张凌：后台操作沟通与进度跟进</div>
+                    <div class="evidence-item">💬 与黄沛敏：会员活动信息同步</div>
+                    <div class="evidence-item">💬 活动通知模板：参与人群/条件/赠品/编码全要素齐全</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 联系方式 -->
+        <div class="contact-card" id="contact">
+            <div class="contact-title">联系方式</div>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <strong>部门</strong>
+                    私域部CRM组
+                </div>
+                <div class="contact-item">
+                    <strong>负责内容</strong>
+                    抖音渠道会员活动规划与运营，快手、微信小店会员相关也可联系
+                </div>
+                <div class="contact-item">
+                    <strong>邮箱</strong>
+                    linjiamin@haiguibaba.cn
+                    <button class="copy-btn" onclick="copyEmail()">复制</button>
+                </div>
+                <div class="contact-item">
+                    <strong>飞书</strong>
+                    欢迎私窗沟通，随时在线
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部操作区 -->
+        <div class="action-bar">
+            <button class="action-btn" onclick="copyProfile()">📋 一键复制简介</button>
+            <button class="action-btn" onclick="scrollToContact()">✉️ 联系我</button>
+            <button class="action-btn" onclick="toggleAllEvidence()">📂 全部展开 / 收起依据</button>
+        </div>
+
+        <!-- 结尾 -->
+        <div class="footer">
+            <div class="footer-slogan">「人生是自己描绘的画。」</div>
+            <div class="footer-note">
+                本页内容整理自本人飞书聊天与文档记录，仅作个人介绍使用，可随时删改。<br>
+                各项能力下方均标注「依据与出处」，含文档名与日期，供本人自查。
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回顶部 -->
+    <button class="back-top" id="backTop" onclick="backToTop()">↑</button>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 视角切换 - 默认电脑模式
+        function switchView(view) {
+            const container = document.getElementById('container');
+            const buttons = document.querySelectorAll('.view-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (view === 'mobile') {
+                container.classList.add('mobile');
+            } else {
+                container.classList.remove('mobile');
+            }
+        }
+
+        // 依据折叠
+        function toggleEvidence(id) {
+            const el = document.getElementById(id);
+            el.classList.toggle('show');
+        }
+
+        // 全部展开/收起
+        let allEvidenceOpen = false;
+        function toggleAllEvidence() {
+            allEvidenceOpen = !allEvidenceOpen;
+            document.querySelectorAll('.evidence-list').forEach(el => {
+                if (allEvidenceOpen) {
+                    el.classList.add('show');
+                } else {
+                    el.classList.remove('show');
+                }
+            });
+            showToast(allEvidenceOpen ? '已展开全部依据' : '已收起全部依据');
+        }
+
+        // 打招呼
+        const greetings = [
+            '你好，我是林嘉敏，很高兴认识你 👋',
+            '对接会员活动，随时私窗我～',
+            '需要会员数据支持？找我准没错',
+            '快手、微信小店的会员问题也可以找我哦',
+            '欢迎来聊聊运营心得 🤝'
+        ];
+        let greetIndex = 0;
+        function sayHello() {
+            const el = document.getElementById('greetText');
+            el.textContent = greetings[greetIndex % greetings.length];
+            greetIndex++;
+        }
+
+        // 点头像打招呼
+        function avatarHello() {
+            const tips = ['你好呀～', '很高兴认识你！', '欢迎来沟通～', '随时在线 ✌️'];
+            showToast(tips[Math.floor(Math.random() * tips.length)]);
+        }
+
+        // 数据解读弹层（用 toast 显示）
+        function dataTip(detail, title) {
+            showToast(title + '：' + detail);
+        }
+
+        // 滚动到指定能力
+        function scrollToFeature(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // 点击卡片标题提示
+        function scrollHint(id) {
+            // 标题点击时给出轻提示
+        }
+
+        // 复制邮箱
+        function copyEmail() {
+            const email = 'linjiamin@haiguibaba.cn';
+            copyText(email);
+            showToast('邮箱已复制：' + email);
+        }
+
+        // 一键复制简介
+        function copyProfile() {
+            const text = '林嘉敏 · 私域部CRM组 · 抖音会员CRM运营\n' +
+                '负责抖音渠道会员活动规划与运营（快手、微信小店会员相关也可联系），' +
+                '连续12个月输出月度活动规划，618大促会员GMV 5605.4万、渗透率50%，' +
+                'Q2获直属上级点评：母婴行业抖音会员四大榜单均排名第一。';
+            copyText(text);
+            showToast('简介已复制，可直接粘贴发送');
+        }
+
+        // 复制通用函数
+        function copyText(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+            } catch (e) {}
+            document.body.removeChild(ta);
+        }
+
+        // 滚动到联系方式
+        function scrollToContact() {
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // 返回顶部
+        window.addEventListener('scroll', function () {
+            const btn = document.getElementById('backTop');
+            if (window.scrollY > 300) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        });
+
+        function backToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toast
+        let toastTimer;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () {
+                toast.classList.remove('show');
+            }, 1800);
+        }
+    </script>
+</body>
+</html>
